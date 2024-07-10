@@ -7,13 +7,13 @@ import './loginPage.css';
 
 function LoginPage() {
     const navigate = useNavigate();
+    const [showPass, setShowPass] = useState(false);
     const [initialValues, setInitialValues] = useState({
         username: '',
         password: ''
     });
 
     useEffect(() => {
-        // redirect to home if already logged in
         if (authenticationService.currentUserValue) {
             navigate('/');
         }
@@ -34,47 +34,57 @@ function LoginPage() {
             );
     };
 
+    const togglePasswordVisibility = () => {
+        setShowPass((prevState) => !prevState);
+    }
+
     return (
-        <div className='login_page'>
-            <div className="alert alert-info">
-                <strong>Normal User</strong> - U: user P: user<br />
-                <strong>Administrator</strong> - U: admin P: admin
+        <div className='login_bg'>
+            <div>
+                <img src="/images/companyLogo.png" alt="Logo" className="company_logo" />
+                <img src="/images/roadstatNewLogo.png" alt="Logo" className="road_logo" />
             </div>
-            <div className='formPage'>
-            <h2>Login</h2>
-            <Formik
-                initialValues={initialValues}
-                validationSchema={Yup.object().shape({
-                    username: Yup.string().required('Username is required'),
-                    password: Yup.string().required('Password is required')
-                })}
-                onSubmit={onSubmit}>
+            <div className='login_page'>
+                <h2 className='login'>Login</h2>
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={Yup.object().shape({
+                        username: Yup.string().required('Username is required'),
+                        password: Yup.string().required('Password is required')
+                    })}
+                    onSubmit={onSubmit}>
 
-{({ errors, status, touched, isSubmitting }) => ( // Replace render prop with child function
-                    <Form>
-                        <div className="form-group">
-                            <label htmlFor="username">Username</label>
-                            <Field name="username" type="text" className={'form-control' + (errors.username && touched.username ? ' is-invalid' : '')} />
-                            <div className="error-message">{errors.username && touched.username ? <ErrorMessage name="username" /> : null}</div>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="password">Password</label>
-                            <Field name="password" type="password" className={'form-control' + (errors.password && touched.password ? ' is-invalid' : '')} />
-                            <div className="error-message">{errors.password && touched.password ? <ErrorMessage name="password" /> : null}</div>
-                        </div>
-                        <div className="form-group">
-                            <button type="submit" className="btn btn-primary" disabled={isSubmitting}>Login</button>
-                            {isSubmitting &&
-                                <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                    {({ errors, status, touched, isSubmitting }) => (
+                        <Form>
+                            <div>
+                                <Field type="text" name="username" className={'text_bar' + (errors.username && touched.username ? ' is-invalid' : '')} placeholder="Username" />
+                                <div className="error_message">
+                                    <ErrorMessage name="username" />
+                                </div>
+                            </div>
+                            <div className='password_container'>
+                                <Field type={showPass ? "text" : "password"} name="password" className={'text_bar' + (errors.password && touched.password ? ' is-invalid' : '')} placeholder="Password" />
+                                <div className="error_message">
+                                    <ErrorMessage name="password" />
+                                </div>
+                            </div>
+                            <div>
+                                <button type="submit" className="login_btn" disabled={isSubmitting}>Login</button>
+                                {isSubmitting &&
+                                    <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                                }
+                            </div>
+                            {status &&
+                                <div className="alert_danger">{status}</div>
                             }
-                        </div>
-                        {status &&
-                            <div className={'alert alert-danger'}>{status}</div>
-                        }
-                    </Form>
-                )}
+                            <div>
+                                <p className='signup'>Don't have an account? Sign Up</p>
+                            </div>
 
-            </Formik>
+                        </Form>
+                    )}
+
+                </Formik>
             </div>
         </div>
     );
