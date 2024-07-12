@@ -7,7 +7,6 @@ import './loginPage.css';
 
 function LoginPage() {
     const navigate = useNavigate();
-    const [showPass, setShowPass] = useState(false);
     const [initialValues, setInitialValues] = useState({
         username: '',
         password: ''
@@ -34,10 +33,6 @@ function LoginPage() {
             );
     };
 
-    const togglePasswordVisibility = () => {
-        setShowPass((prevState) => !prevState);
-    }
-
     return (
         <div className='login_bg'>
             <div>
@@ -63,7 +58,7 @@ function LoginPage() {
                                 </div>
                             </div>
                             <div className='password_container'>
-                                <Field type={showPass ? "text" : "password"} name="password" className={'text_bar' + (errors.password && touched.password ? ' is-invalid' : '')} placeholder="Password" />
+                                <Field type='password' name="password" className={'text_bar' + (errors.password && touched.password ? ' is-invalid' : '')} placeholder="Password" />
                                 <div className="error_message">
                                     <ErrorMessage name="password" />
                                 </div>
