@@ -57,11 +57,10 @@ function LoginPage() {
                                     <ErrorMessage name="username" />
                                 </div>
                             </div>
-                            <div className='password_container'>
-                                <Field type='password' name="password" className={'text_bar' + (errors.password && touched.password ? ' is-invalid' : '')} placeholder="Password" />
-                                <div className="error_message">
-                                    <ErrorMessage name="password" />
-                                </div>
+
+                            <Field type='password' name="password" className={'text_bar' + (errors.password && touched.password ? ' is-invalid' : '')} placeholder="Password" />
+                            <div className="error_message">
+                                <ErrorMessage name="password" />
                             </div>
                             <div>
                                 <button type="submit" className="login_btn" disabled={isSubmitting}>Login</button>
@@ -73,7 +72,7 @@ function LoginPage() {
                                 <div className="alert_danger">{status}</div>
                             }
                             <div>
-                                <p className='signup'>Don't have an account? Sign Up</p>
+                                <p className='signup'>Don't have an account? <Link to="/signup">Sign up</Link></p>
                             </div>
 
                         </Form>
