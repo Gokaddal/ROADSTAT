@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Line } from "react-chartjs-2";
-import "./driver.css";
+import "./Driver.css";
 import annotationPlugin from "chartjs-plugin-annotation";
 import Chart from "chart.js/auto";
 import { LinearScale, TimeScale } from "chart.js";

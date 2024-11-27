@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import "./usage.css";
+import "./Usage.css";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
