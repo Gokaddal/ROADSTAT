@@ -3,7 +3,7 @@ name: Deploy to AWS ECS
 on:
   push:
     branches:
-      - main  # Trigger deployment on push to the main branch
+      - main # Trigger deployment on push to the main branch
 
 jobs:
   deploy:
@@ -34,11 +34,11 @@ jobs:
           echo "${{ secrets.AWS_NEW_SSH_KEY }}" > aws-ec2-key.pem
           chmod 600 aws-ec2-key.pem
           ssh -o StrictHostKeyChecking=no -i aws-ec2-key.pem ubuntu@3.91.228.87 << 'EOF'
-            export AWS_REGION=us-east-1 && \
-            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 264427725539.dkr.ecr.us-east-1.amazonaws.com && \
-            docker images | grep '264427725539.dkr.ecr.us-east-1.amazonaws.com/myecr-repo' | awk '{print $3}' | xargs -r docker rmi
-            docker pull 264427725539.dkr.ecr.us-east-1.amazonaws.com/myecr-repo:latest && \
-            docker ps | grep '5173' | awk '{print $1}' | xargs -r docker stop
-            docker ps -q -f ancestor=264427725539.dkr.ecr.us-east-1.amazonaws.com/myecr-repo:latest | xargs -r docker stop | xargs -r docker rm && \
-            docker run -d -p 80:5173 -p 3000:3000 -p 5173:5173 264427725539.dkr.ecr.us-east-1.amazonaws.com/myecr-repo:latest
+            set -e
+            export AWS_REGION=us-east-1
+            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 264427725539.dkr.ecr.us-east-1.amazonaws.com
+            docker pull 264427725539.dkr.ecr.us-east-1.amazonaws.com/myecr-repo:latest
+            docker stop $(docker ps -q --filter ancestor=264427725539.dkr.ecr.us-east-1.amazonaws.com/myecr-repo:latest) || true
+            docker rm $(docker ps -aq --filter ancestor=264427725539.dkr.ecr.us-east-1.amazonaws.com/myecr-repo:latest) || true
+            docker run -d -p 80:5173 -p 3000:3000 -p 5173:5173 --name my-app 264427725539.dkr.ecr.us-east-1.amazonaws.com/myecr-repo:latest
           EOF
