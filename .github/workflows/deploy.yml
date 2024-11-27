@@ -1,9 +1,9 @@
-name: Deploy to AWS ECS
+name: Deploy to AWS ECS and EC2
 
 on:
   push:
     branches:
-      - main # Trigger deployment on push to the main branch
+      - main
 
 jobs:
   deploy:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up AWS CL
+      - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_A }}
@@ -23,6 +23,7 @@ jobs:
       - name: Log in to Amazon ECR
         run: |
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 264427725539.dkr.ecr.us-east-1.amazonaws.com
+
       - name: Build and push frontend Docker image
         run: |
           docker build -t myecr-repo .
@@ -36,9 +37,28 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i aws-ec2-key.pem ubuntu@3.91.228.87 << 'EOF'
             set -e
             export AWS_REGION=us-east-1
-            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 264427725539.dkr.ecr.us-east-1.amazonaws.com
-            docker pull 264427725539.dkr.ecr.us-east-1.amazonaws.com/myecr-repo:latest
-            docker stop $(docker ps -q --filter ancestor=264427725539.dkr.ecr.us-east-1.amazonaws.com/myecr-repo:latest) || true
-            docker rm $(docker ps -aq --filter ancestor=264427725539.dkr.ecr.us-east-1.amazonaws.com/myecr-repo:latest) || true
-            docker run -d -p 80:5173 -p 3000:3000 -p 5173:5173 --name my-app 264427725539.dkr.ecr.us-east-1.amazonaws.com/myecr-repo:latest
+            REPOSITORY_NAME=myecr-repo
+            ECR_URL=264427725539.dkr.ecr.us-east-1.amazonaws.com
+
+            # Authenticate Docker with ECR
+            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_URL
+
+            # Pull the latest image
+            docker pull $ECR_URL/$REPOSITORY_NAME:latest
+
+            # Stop and remove running containers using the previous image
+            RUNNING_CONTAINER=$(docker ps -q --filter ancestor=$ECR_URL/$REPOSITORY_NAME:latest)
+            if [ -n "$RUNNING_CONTAINER" ]; then
+              docker stop $RUNNING_CONTAINER || true
+              docker rm $RUNNING_CONTAINER || true
+            fi
+
+            # Remove any existing container named "my-app"
+            EXISTING_CONTAINER=$(docker ps -aq --filter name=my-app)
+            if [ -n "$EXISTING_CONTAINER" ]; then
+              docker rm -f my-app || true
+            fi
+
+            # Run the new container
+            docker run -d -p 80:5173 -p 3000:3000 -p 5173:5173 --name my-app $ECR_URL/$REPOSITORY_NAME:latest
           EOF
