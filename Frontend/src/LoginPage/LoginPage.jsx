@@ -64,7 +64,7 @@ function LoginPage() {
       </div>
       <div className="half_login">
         <div className="login_page">
-          <h2 className="login">Login test</h2>
+          <h2 className="login">Login</h2>
           <Formik
             initialValues={initialValues}
             validationSchema={Yup.object().shape({
