@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import MapComponent from "./MapComponent";
-import "./home.css";
+import "./Home.css";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
