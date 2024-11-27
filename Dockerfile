@@ -30,6 +30,9 @@ RUN npm install -g nodemon
 # Install nodemon globally
 RUN npm install concurrently --save-dev
 
+# Install nodemon globally
+RUN npm install vite
+
 # Expose application ports
 EXPOSE 3000
 EXPOSE 5173
