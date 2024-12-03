@@ -7,20 +7,20 @@ function Header({ currentUser, logout, activeButtonC }) {
   const [popupVisible, setPopupVisible] = useState(false);
   const popupRef = useRef(null);
 
+  // Debugging the currentUser object
+  useEffect(() => {
+    console.log("Current User:", currentUser);
+  }, [currentUser]);
+
   const handleButtonClick = (buttonName) => {
-    if (buttonName === "Home") {
-      navigate("/home");
-    } else if (buttonName === "Track") {
-      navigate("/track");
-    } else if (buttonName === "Vehicle Control") {
-      navigate("/truckcontrol/usage");
-    } else if (buttonName === "Maintenance") {
-      navigate("/maintenance");
-    } else if (buttonName === "Driver") {
-      navigate("/driver");
-    } else {
-      navigate("/");
-    }
+    const routes = {
+      Home: "/home",
+      Track: "/track",
+      "Vehicle Control": "/truckcontrol/usage",
+      Maintenance: "/maintenance",
+      Driver: "/driver",
+    };
+    navigate(routes[buttonName] || "/");
     console.log(buttonName);
   };
 
@@ -57,7 +57,7 @@ function Header({ currentUser, logout, activeButtonC }) {
           <div className="user_popup" ref={popupRef}>
             <p>
               <img src="/images/user.png" alt="User Icon" />
-              {currentUser.username}
+              {currentUser?.username || "Guest"} {/* Fallback to "Guest" */}
             </p>
             <a href="#" onClick={logout}>
               <img src="/images/logout.png" alt="Logout Icon" />
@@ -67,36 +67,19 @@ function Header({ currentUser, logout, activeButtonC }) {
         )}
 
         <div className="nav_container">
-          <div
-            className={activeButtonC === "Home" ? "active" : ""}
-            onClick={() => handleButtonClick("Home")}
-          >
-            Home
-          </div>
-          <div
-            className={activeButtonC === "Track" ? "active" : ""}
-            onClick={() => handleButtonClick("Track")}
-          >
-            Track
-          </div>
-          <div
-            className={activeButtonC === "Vehicle Control" ? "active" : ""}
-            onClick={() => handleButtonClick("Vehicle Control")}
-          >
-            Asset Control
-          </div>
-          <div
-            className={activeButtonC === "Maintenance" ? "active" : ""}
-            onClick={() => handleButtonClick("Maintenance")}
-          >
-            Maintenance
-          </div>
-          <div
-            className={activeButtonC === "Driver" ? "active" : ""}
-            onClick={() => handleButtonClick("Driver")}
-          >
-            Driver
-          </div>
+          {["Home", "Track", "Vehicle Control", "Maintenance", "Driver"].map(
+            (buttonName) => (
+              <div
+                key={buttonName}
+                className={activeButtonC === buttonName ? "active" : ""}
+                onClick={() => handleButtonClick(buttonName)}
+              >
+                {buttonName === "Vehicle Control"
+                  ? "Asset Control"
+                  : buttonName}
+              </div>
+            )
+          )}
         </div>
       </div>
       <div className="half_bg"></div>

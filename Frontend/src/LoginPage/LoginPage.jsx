@@ -1,14 +1,16 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/authContext";
-//import { authenticationService } from '../../../Backend/src/_services';
 import "./loginPage.css";
 
 function LoginPage() {
   const navigate = useNavigate();
   const { user, login, message, clearMessage } = useAuth();
+  const [showPass, setShowPass] = useState(false); // State for password visibility
+
   const initialValues = {
     identifier: "", // Can be username or email
     password: "",
@@ -27,6 +29,10 @@ function LoginPage() {
     }
   }, [message, clearMessage]);
 
+  const togglePasswordVisibility = () => {
+    setShowPass(!showPass);
+  };
+
   const onSubmit = async (
     { identifier, password },
     { setStatus, setSubmitting }
@@ -35,7 +41,6 @@ function LoginPage() {
     try {
       const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
 
-      // Dynamically construct payload
       const payload = {
         ...(isEmail ? { email: identifier } : { username: identifier }),
         password,
@@ -94,18 +99,33 @@ function LoginPage() {
                   </div>
                 </div>
 
-                <Field
-                  type="password"
-                  name="password"
-                  className={
-                    "text_bar" +
-                    (errors.password && touched.password ? " is-invalid" : "")
-                  }
-                  placeholder="Password"
-                />
+                {/* Password Field with Toggle Visibility */}
+                <div className="password_container">
+                  <Field
+                    type={showPass ? "text" : "password"} // Dynamic type based on state
+                    name="password"
+                    className={
+                      "text_bar" +
+                      (errors.password && touched.password ? " is-invalid" : "")
+                    }
+                    placeholder="Password"
+                  />
+                  {showPass ? (
+                    <BiSolidShow
+                      className="pass_icon"
+                      onClick={togglePasswordVisibility}
+                    />
+                  ) : (
+                    <BiSolidHide
+                      className="pass_icon"
+                      onClick={togglePasswordVisibility}
+                    />
+                  )}
+                </div>
                 <div className="error_message">
                   <ErrorMessage name="password" />
                 </div>
+
                 <div>
                   <button
                     type="submit"

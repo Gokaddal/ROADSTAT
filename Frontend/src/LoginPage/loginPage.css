@@ -1,3 +1,17 @@
+.password_container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pass_icon {
+  height: 330px;
+  right: 40px;
+  position: absolute;
+  top: -115px;
+  cursor: pointer;
+}
+
 .login_bg {
   background: #ffffff;
   position: absolute;
@@ -61,6 +75,7 @@
   font-size: 40px;
   color: #000000;
   text-align: center;
+  margin-top: 7px;
 }
 
 .text_bar {
@@ -126,6 +141,7 @@ input:focus {
   font-family: "Judson";
   font-style: normal;
   font-size: 18px;
+  margin-top: -50px;
 }
 
 .signup {

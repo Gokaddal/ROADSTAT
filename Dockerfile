@@ -30,7 +30,7 @@ RUN npm install -g nodemon
 # Install nodemon globally
 RUN npm install concurrently --save-dev
 
-# Install nodemon globally
+# Install npm
 RUN npm install vite
 
 # Expose application ports
